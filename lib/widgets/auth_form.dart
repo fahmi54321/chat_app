@@ -5,7 +5,6 @@ class AuthForm extends StatefulWidget {
   _AuthFormState createState() => _AuthFormState();
 }
 
-
 //todo 2 (finish)
 
 class _AuthFormState extends State<AuthForm> {
@@ -36,13 +35,18 @@ class _AuthFormState extends State<AuthForm> {
                     decoration: InputDecoration(labelText: 'Password'),
                     obscureText: true,
                   ),
-
-                  SizedBox(height: 12,),
-                  
-                  RaisedButton(onPressed: (){},child: Text('Login'),),
-
-                  FlatButton(onPressed: (){}, child: Text('Create new account'),),
-
+                  SizedBox(
+                    height: 12,
+                  ),
+                  RaisedButton(
+                    onPressed: () {},
+                    child: Text('Login'),
+                  ),
+                  FlatButton(
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: () {},
+                    child: Text('Create new account'),
+                  ),
                 ],
               ),
             ),
