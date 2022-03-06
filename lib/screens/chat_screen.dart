@@ -8,14 +8,14 @@ class ChatScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Chat app'),
       ),
-      body: StreamBuilder<QuerySnapshot>( // todo 1 menambahkan stream builder
-        stream: Firestore.instance // todo 2 snapshot pada firestore merupakan value stream
+      body: StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance
             .collection('chats/ZSOZfn0372aAg0kR3qGI/messages')
             .snapshots(),
         builder: (context, snapshot) {
           print('connect ${snapshot.connectionState}');
 
-          if (snapshot.connectionState == ConnectionState.waiting) { // todo 3 kondisi jika loading
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -23,7 +23,7 @@ class ChatScreen extends StatelessWidget {
 
           final documents = snapshot.data.documents;
 
-          return ListView.builder( //todo 4 bind data ke listview (finish)
+          return ListView.builder(
             itemCount: documents.length,
             itemBuilder: (ctx, index) {
               return Container(
@@ -36,7 +36,11 @@ class ChatScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Firestore.instance // todo 1 (finish)
+              .collection('chats/ZSOZfn0372aAg0kR3qGI/messages')
+              .add({'title': 'This was added by clicking the button'});
+        },
       ),
     );
   }
