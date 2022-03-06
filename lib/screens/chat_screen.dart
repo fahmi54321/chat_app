@@ -5,28 +5,38 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: 30,
-        itemBuilder: (ctx, index) => Container(
-          padding: EdgeInsets.all(8),
-          child: Text('This works!'),
-        ),
+      appBar: AppBar(
+        title: Text('Chat app'),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Firestore.instance
-              .collection('chats/ZSOZfn0372aAg0kR3qGI/messages')
-              .snapshots()
-              .listen(
-            (data) {
-              // print(data.documents[0]['text']);
-              data.documents.forEach((element) {
-                print(element['title']);
-              });
+      body: StreamBuilder<QuerySnapshot>( // todo 1 menambahkan stream builder
+        stream: Firestore.instance // todo 2 snapshot pada firestore merupakan value stream
+            .collection('chats/ZSOZfn0372aAg0kR3qGI/messages')
+            .snapshots(),
+        builder: (context, snapshot) {
+          print('connect ${snapshot.connectionState}');
+
+          if (snapshot.connectionState == ConnectionState.waiting) { // todo 3 kondisi jika loading
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final documents = snapshot.data.documents;
+
+          return ListView.builder( //todo 4 bind data ke listview (finish)
+            itemCount: documents.length,
+            itemBuilder: (ctx, index) {
+              return Container(
+                padding: EdgeInsets.all(8),
+                child: Text(documents[index]['title']),
+              );
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {},
       ),
     );
   }
