@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chat_app/widgets/auth_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -10,7 +11,8 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final _auth = FirebaseAuth.instance; //todo 1
+  final _auth = FirebaseAuth.instance;
+  var _isLoading = false;
 
   void _submitAuthForm(
     String email,
@@ -19,11 +21,13 @@ class _AuthScreenState extends State<AuthScreen> {
     bool isLogin,
     BuildContext ctx,
   ) async {
+    AuthResult authResult;
 
-    AuthResult authResult; //todo 2
-
-    //todo 3 (finish)
     try {
+      setState(() {
+        _isLoading = true;
+      });
+
       if (isLogin == true) {
         authResult = await _auth.signInWithEmailAndPassword(
           email: email,
@@ -34,6 +38,19 @@ class _AuthScreenState extends State<AuthScreen> {
           email: email,
           password: password,
         );
+
+        //todo 1 (finish)
+        await Firestore.instance
+            .collection('users')
+            .document(authResult.user.uid)
+            .setData({
+          'username': username,
+          'password': password,
+        });
+
+        setState(() {
+          _isLoading = false;
+        });
       }
     } on PlatformException catch (error) {
       var message = 'An error ocurred, please check your credentials';
@@ -48,8 +65,16 @@ class _AuthScreenState extends State<AuthScreen> {
           backgroundColor: Theme.of(ctx).errorColor,
         ),
       );
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
       print(error);
+
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -59,6 +84,7 @@ class _AuthScreenState extends State<AuthScreen> {
       backgroundColor: Theme.of(context).primaryColor,
       body: AuthForm(
         submitFn: _submitAuthForm,
+        isLoading: _isLoading,
       ),
     );
   }
