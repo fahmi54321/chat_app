@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
+
+  //todo 1
+  final void Function(
+    String email,
+    String password,
+    String userName,
+    bool isLogin,
+  ) submitFn;
+
+  //todo 2
+  AuthForm({
+    this.submitFn,
+  });
+
   @override
   _AuthFormState createState() => _AuthFormState();
 }
 
-
-//todo 1 (finish)
-
 class _AuthFormState extends State<AuthForm> {
-
   final _formKey = GlobalKey<FormState>();
 
   var _isLogin = true;
@@ -17,14 +27,14 @@ class _AuthFormState extends State<AuthForm> {
   var _userEmail = '';
   var _userPassword = '';
 
-  void _trySubmit(){
+  void _trySubmit() {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
-    if(isValid){
+    if (isValid) {
       _formKey.currentState.save();
+      widget.submitFn(_userEmail,_userPassword,_userName,_isLogin,); // todo 3 (next auth_screen)
     }
-
   }
 
   @override
@@ -46,18 +56,16 @@ class _AuthFormState extends State<AuthForm> {
                     decoration: InputDecoration(
                       labelText: 'Email address',
                     ),
-                    validator: (value){
-                      if(value.isEmpty || !value.contains('@')){
+                    validator: (value) {
+                      if (value.isEmpty || !value.contains('@')) {
                         return 'Please enter a valid email address';
                       }
                       return null;
                     },
-                    onSaved: (value){
+                    onSaved: (value) {
                       _userEmail = value;
                     },
                   ),
-
-
                   if (_isLogin == false)
                     TextFormField(
                       key: ValueKey('username'),
@@ -78,13 +86,13 @@ class _AuthFormState extends State<AuthForm> {
                     key: ValueKey('password'),
                     decoration: InputDecoration(labelText: 'Password'),
                     obscureText: true,
-                    validator: (value){
-                      if(value.isEmpty || value.length < 7){
+                    validator: (value) {
+                      if (value.isEmpty || value.length < 7) {
                         return 'Password must be at least 7 characters long';
                       }
                       return null;
                     },
-                    onSaved: (value){
+                    onSaved: (value) {
                       _userPassword = value;
                     },
                   ),
@@ -102,7 +110,9 @@ class _AuthFormState extends State<AuthForm> {
                         _isLogin = !_isLogin;
                       });
                     },
-                    child: Text(_isLogin == true ? 'Create new account' : 'I already have an account'),
+                    child: Text(_isLogin == true
+                        ? 'Create new account'
+                        : 'I already have an account'),
                   ),
                 ],
               ),
