@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatScreen extends StatelessWidget {
   @override
@@ -7,6 +8,33 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat app'),
+        actions: [
+          DropdownButton(
+            icon: Icon(
+              Icons.more_vert,
+              color: Theme.of(context).primaryIconTheme.color,
+            ),
+            items: [
+              DropdownMenuItem(
+                child: Container(
+                  child: Row(
+                    children: [
+                      Icon(Icons.exit_to_app),
+                      SizedBox(width: 8),
+                      Text('Logout'),
+                    ],
+                  ),
+                ),
+                value: 'logout',
+              ),
+            ],
+            onChanged: (itemIdentifier){
+              if(itemIdentifier == 'logout'){
+                FirebaseAuth.instance.signOut(); // todo 2 (finish)
+              }
+            },
+          )
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance
@@ -37,7 +65,7 @@ class ChatScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Firestore.instance // todo 1 (finish)
+          Firestore.instance
               .collection('chats/ZSOZfn0372aAg0kR3qGI/messages')
               .add({'title': 'This was added by clicking the button'});
         },
