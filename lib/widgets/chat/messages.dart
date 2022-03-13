@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Messages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<FirebaseUser>( // todo 9 untuk mendapatkan uid
+    return FutureBuilder<FirebaseUser>(
       future: FirebaseAuth.instance.currentUser(),
       builder: (ctx, futureSnapshot) {
         if (futureSnapshot.connectionState == ConnectionState.waiting) {
@@ -40,9 +40,10 @@ class Messages extends StatelessWidget {
                 itemCount: chatDocs.length,
                 itemBuilder: (ctx, index) {
                   return MessageBubble(
-                    chatDocs[index]['text'], // todo 10
-                    chatDocs[index]['userId'] == futureSnapshot.data.uid, // todo 11
-                    key: ValueKey(chatDocs[index].documentID,), // todo 12 (next new_messages)
+                    chatDocs[index]['text'],
+                    chatDocs[index]['username'], // todo 4 (next new_messages.dart)
+                    chatDocs[index]['userId'] == futureSnapshot.data.uid,
+                    key: ValueKey(chatDocs[index].documentID,),
                   );
                 },
               );
